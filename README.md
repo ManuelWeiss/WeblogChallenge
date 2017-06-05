@@ -1,65 +1,44 @@
-# WeblogChallenge
-This is an interview challenge for Paytm Labs. Please feel free to fork. Pull Requests will be ignored.
+# My solution
 
-The challenge is to make make analytical observations about the data using the distributed tools below.
+I implemented this using Spark's dataset API. I considered Spark Streaming, but I'm not very familiar with the API.
 
-## Processing & Analytical goals:
+To run the tests, use
 
-1. Sessionize the web log by IP. Sessionize = aggregrate all page hits by visitor/IP during a fixed time window.
-    https://en.wikipedia.org/wiki/Session_(web_analytics)
+```bash
+$ sbt test
+```
 
-2. Determine the average session time
+To run the spark program (using "local" mode), use
 
-3. Determine unique URL visits per session. To clarify, count a hit to a unique URL only once per session.
+```bash
+$ sbt run </path/to/logfile>
 
-4. Find the most engaged users, ie the IPs with the longest session times
+```
 
-## Additional questions for Machine Learning Engineer (MLE) candidates:
-1. Predict the expected load (requests/second) in the next minute
+# Results
 
-2. Predict the session length for a given IP
+For the provided log file, my results were the following:
 
-3. Predict the number of unique URL visits by a given IP
+### Average session length (in seconds): 100.73
 
-### Tools allowed (in no particular order):
-- Spark (any language, but prefer Scala or Java)
-- Pig
-- MapReduce (Hadoop 2.x only)
-- Flink
-- Cascading, Cascalog, or Scalding
+### Average number of unique URLs/session: 8.31
 
-If you need Hadoop, we suggest 
-HDP Sandbox:
-http://hortonworks.com/hdp/downloads/
-or 
-CDH QuickStart VM:
-http://www.cloudera.com/content/cloudera/en/downloads.html
+### Top 10 most engaged users
+ 
+|     ip address    | longest session (s) |
+|-------------------|--------------------:|
+|     52.74.219.71  |            2069.162 |
+|    119.81.61.166  |            2068.849 |
+|    106.186.23.95  |            2068.756 |
+|     125.19.44.66  |            2068.713 |
+|     125.20.39.66  |            2068.320 |
+|     192.8.190.10  |            2067.235 |
+|    54.251.151.39  |            2067.023 |
+|   180.211.69.209  |            2066.961 |
+|   180.179.213.70  |            2065.638 |
+|   203.189.176.14  |            2065.594 |
 
+# Notes
 
-### Additional notes:
-- You are allowed to use whatever libraries/parsers/solutions you can find provided you can explain the functions you are implementing in detail.
-- IP addresses do not guarantee distinct users, but this is the limitation of the data. As a bonus, consider what additional data would help make better analytical conclusions
-- For this dataset, complete the sessionization by time window rather than navigation. Feel free to determine the best session window time on your own, or start with 15 minutes.
-- The log file was taken from an AWS Elastic Load Balancer:
-http://docs.aws.amazon.com/ElasticLoadBalancing/latest/DeveloperGuide/access-log-collection.html#access-log-entry-format
-
-
-
-## How to complete this challenge:
-
-A. Fork this repo in github
-    https://github.com/PaytmLabs/WeblogChallenge
-
-B. Complete the processing and analytics as defined first to the best of your ability with the time provided.
-
-C. Place notes in your code to help with clarity where appropriate. Make it readable enough to present to the Paytm Labs interview team.
-
-D. Complete your work in your own github repo and send the results to us and/or present them during your interview.
-
-## What are we looking for? What does this prove?
-
-We want to see how you handle:
-- New technologies and frameworks
-- Messy (ie real) data
-- Understanding data transformation
-This is not a pass or fail test, we want to hear about your challenges and your successes with this particular problem.
+I have assumed a 15 minute timeout for sessions. I only considered IP addresses, ignoring the port for this analysis.
+To distinguish several users on the same IP address (e.g. on a public wifi), one could include the user-agent string as well.
